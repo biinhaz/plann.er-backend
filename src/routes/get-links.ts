@@ -8,6 +8,8 @@ import { ClientError } from "../errors/client-error";
 export async function getLinks(app: FastifyInstance) {
     app.withTypeProvider<ZodTypeProvider>().get('/trips/:tripId/links', {
         schema: {
+            summary: 'Get links',
+            tags: ['links'],
             params: z.object({
                 tripId: z.string().uuid(),
             })

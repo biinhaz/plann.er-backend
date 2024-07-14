@@ -11,6 +11,8 @@ import { env } from "../env";
 export async function createTrip(app: FastifyInstance) {
     app.withTypeProvider<ZodTypeProvider>().post('/trips', {
         schema: {
+            summary: 'Create a trip',
+            tags: ['trips'],
             body: z.object({
                 destination: z.string().min(4),
                 starts_at: z.coerce.date(),

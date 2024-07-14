@@ -1,6 +1,11 @@
 import fastify from "fastify";
 import cors from "@fastify/cors";
-import { serializerCompiler, validatorCompiler } from "fastify-type-provider-zod";
+
+
+import fastifySwagger from "@fastify/swagger";
+import fastifySwaggerUi from "@fastify/swagger-ui";
+
+import { jsonSchemaTransform, serializerCompiler, validatorCompiler } from "fastify-type-provider-zod";
 import { createTrip } from "./routes/create-trip";
 import { confirmTrip } from "./routes/confirm-trip";
 import { confirmParticipants } from "./routes/confirm-participant";
@@ -17,6 +22,23 @@ import { errorHandler } from "./error-handler";
 import { env } from "./env";
 
 const app = fastify()
+
+app.register(fastifySwagger, {
+    swagger: {
+        consumes: ['application/json'],
+        produces: ['application/json'],
+        info: {
+            title: 'plann.er',
+            description: 'Especificações da API para o back-end da aplicação plann.er.',
+            version: '1.0.0',
+        },
+    },
+    transform: jsonSchemaTransform,
+})
+
+app.register(fastifySwaggerUi, {
+    routePrefix: '/docs',
+})
 
 app.register(cors, {
     origin: '*',
@@ -40,6 +62,6 @@ app.register(updateTrip)
 app.register(getTripDetails)
 app.register(getParticipant)
 
-app.listen({ port: env.PORT }).then(() => {
+app.listen({ port: env.PORT, host: '0.0.0.0' }).then(() => {
     console.log("Server running!")
 })
